@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pong Game</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .paddle {
+      position: absolute;
+      width: 10px;
+      height: 60px;
+      background-color: white;
+    }
+
+    #leftPaddle {
+      left: 20px;
+    }
+
+    #rightPaddle {
+      right: 20px;
+    }
+
+    .ball {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="paddle" id="leftPaddle"></div>
+    <div class="paddle" id="rightPaddle"></div>
+    <div class="ball" id="ball"></div>
+  </div>
+  <script>
+    const paddleSpeed = 5;
+    const ballSpeed = 3;
+
+    let leftPaddleY = 0;
+    let rightPaddleY = 0;
+    let ballX = 0;
+    let ballY = 0;
+    let ballXSpeed = ballSpeed;
+    let ballYSpeed = ballSpeed;
+
+    function update() {
+      // Move paddles
+      document.getElementById("leftPaddle").style.top = leftPaddleY + "px";
+      document.getElementById("rightPaddle").style.top = rightPaddleY + "px";
+
+      // Move ball
+      ballX += ballXSpeed;
+      ballY += ballYSpeed;
+      document.getElementById("ball").style.left = ballX + "px";
+      document.getElementById("ball").style.top = ballY + "px";
+
+      // Ball collision with top and bottom
+      if (ballY <= 0 || ballY >= window.innerHeight - 10) {
+        ballYSpeed *= -1;
+      }
+
+      // Ball collision with paddles
+      if (
+        (ballX <= 30 && ballY >= leftPaddleY && ballY <= leftPaddleY + 60) ||
+        (ballX >= window.innerWidth - 40 && ballY >= rightPaddleY && ballY <= rightPaddleY + 60)
+      ) {
+        ballXSpeed *= -1;
+      }
+
+      // Ball out of bounds (score)
+      if (ballX <= 0 || ballX >= window.innerWidth - 10) {
+        // Reset ball position
+        ballX = window.innerWidth / 2 - 5;
+        ballY = window.innerHeight / 2 - 5;
+        // Reverse ball direction
+        ballXSpeed *= -1;
+      }
+
+      requestAnimationFrame(update);
+    }
+
+    update();
+
+    // Control paddles with arrow keys
+    document.addEventListener("keydown", function(event) {
+      switch (event.key) {
+        case "ArrowUp":
+          rightPaddleY -= paddleSpeed;
+          break;
+        case "ArrowDown":
+          rightPaddleY += paddleSpeed;
+          break;
+        case "w":
+          leftPaddleY -= paddleSpeed;
+          break;
+        case "s":
+          leftPaddleY += paddleSpeed;
+          break;
+      }
+    });
+  </script>
+</body>
+</html>
